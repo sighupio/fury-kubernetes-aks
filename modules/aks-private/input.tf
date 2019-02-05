@@ -23,7 +23,15 @@ variable "app-node-number" {
 }
 
 variable "app-node-type" {
-  description = "Number of nodes without label `beta.sighup.io/type: infra`. See https://docs.microsoft.com/en-us/azure/virtual-machines/linux/sizes"
+  description = "Type of nodes without label `beta.sighup.io/type: infra`. See https://docs.microsoft.com/en-us/azure/virtual-machines/linux/sizes"
+}
+
+variable "build-node-number" {
+  description = "Number of nodes dedicated to building container images"
+}
+
+variable "build-node-type" {
+  description = "Type of nodes dedicated to building container images. See https://docs.microsoft.com/en-us/azure/virtual-machines/linux/sizes"
 }
 
 variable "ad-client-app-id" {
@@ -56,6 +64,10 @@ variable "public_subnet_cidr" {
 
 variable "bastion_subnet_cidr" {
   description = "Bastion host subnet, must be a subnet of `vpc_cidr`."
+}
+
+variable "build_subnet_cidr" {
+  description = "Docker build nodes subnet, must be a subnet of `vpc_cidr`."
 }
 
 variable "public_subnet_endpoints" {

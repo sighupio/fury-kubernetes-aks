@@ -27,9 +27,20 @@ locals {
   inventory = <<EOF
 bastion ansible_host="${azurerm_public_ip.bastion.ip_address}"
 
+[gated]
+
+[gated:children]
+build
+
+[build]
+${join("\n", azurerm_network_interface.build.*.private_ip_address)}
+
 [all:vars]
 ansible_ssh_private_key_file="../secrets/terraform"
 ansible_user=ubuntu
+
+[gated:vars]
+ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q -i ../secrets/terraform ubuntu@${azurerm_public_ip.bastion.ip_address}"'
 EOF
 }
 

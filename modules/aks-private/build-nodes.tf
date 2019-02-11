@@ -86,6 +86,10 @@ resource "azurerm_virtual_machine" "build" {
 
   delete_os_disk_on_termination = true
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   storage_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"

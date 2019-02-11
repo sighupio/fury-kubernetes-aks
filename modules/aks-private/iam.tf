@@ -125,3 +125,9 @@ resource "azurerm_role_assignment" "bastion" {
   principal_id         = "${lookup(azurerm_virtual_machine.bastion.identity[0], "principal_id")}"
 }
 
+resource "azurerm_role_assignment" "build" {
+  count                = "${var.build-node-number}"
+  scope                = "${azurerm_resource_group.main.id}"
+  role_definition_name = "AcrPush"
+  principal_id         = "${element(azurerm_virtual_machine.build.*.identity.0.principal_id, count.index)}"
+}

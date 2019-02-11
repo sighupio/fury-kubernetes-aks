@@ -1,4 +1,3 @@
-// AKS service principal
 resource "azuread_application" "aks" {
   name = "${var.name}-${var.env}-aks"
 }
@@ -30,7 +29,7 @@ resource "azuread_service_principal_password" "aks" {
 
 data "azurerm_subscription" "main" {}
 
-// Attempt to create a 'least privilidge' role for SP used by AKS
+# Attempt to create a 'least privilidge' role for SP used by AKS
 resource "azurerm_role_definition" "main" {
   name        = "aks-master-${var.name}-${var.env}"
   scope       = "${data.azurerm_subscription.main.id}"
@@ -57,7 +56,7 @@ resource "azurerm_role_definition" "main" {
     ]
 
     not_actions = [
-      // Deny access to all VM actions, this includes Start, Stop, Restart, Delete, Redeploy, Login, Extensions etc
+      # Deny access to all VM actions, this includes Start, Stop, Restart, Delete, Redeploy, Login, Extensions etc
       "Microsoft.Compute/virtualMachines/*/action",
 
       "Microsoft.Compute/virtualMachines/extensions/*",
@@ -85,7 +84,6 @@ resource "azurerm_role_assignment" "aks-network" {
   principal_id         = "${azuread_service_principal.aks.id}"
 }
 
-// ACR service principal
 resource "azuread_application" "acr" {
   name = "${var.name}-${var.env}-acr"
 }
@@ -120,3 +118,10 @@ resource "azurerm_role_assignment" "acr" {
   role_definition_name = "AcrPush"
   principal_id         = "${azuread_service_principal.acr.id}"
 }
+
+resource "azurerm_role_assignment" "bastion" {
+  scope                = "${azurerm_resource_group.main.id}"
+  role_definition_name = "Azure Kubernetes Service Cluster Admin Role"
+  principal_id         = "${lookup(azurerm_virtual_machine.bastion.identity[0], "principal_id")}"
+}
+

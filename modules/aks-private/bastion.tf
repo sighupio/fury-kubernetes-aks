@@ -116,9 +116,3 @@ resource "azurerm_virtual_machine" "bastion" {
     }
   }
 }
-
-resource "azurerm_role_assignment" "bastion" {
-  scope                = "${azurerm_resource_group.main.id}"
-  role_definition_name = "Azure Kubernetes Service Cluster Admin Role"
-  principal_id         = "${lookup(azurerm_virtual_machine.bastion.identity[0], "principal_id")}"
-}

@@ -83,6 +83,10 @@ resource "azurerm_virtual_machine" "bastion" {
 
   delete_os_disk_on_termination = true
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   storage_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
@@ -111,4 +115,10 @@ resource "azurerm_virtual_machine" "bastion" {
       path     = "/home/ubuntu/.ssh/authorized_keys"
     }
   }
+}
+
+resource "azurerm_role_assignment" "bastion" {
+  scope                = "${azurerm_resource_group.main.id}"
+  role_definition_name = "Azure Kubernetes Service Cluster Admin Role"
+  principal_id         = "${lookup(azurerm_virtual_machine.bastion.identity[0], "principal_id")}"
 }

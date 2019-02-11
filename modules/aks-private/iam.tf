@@ -69,14 +69,6 @@ resource "azurerm_role_definition" "main" {
   ]
 }
 
-data "azurerm_resource_group" "aks_agent_pool" {
-  name = "${azurerm_kubernetes_cluster.main.node_resource_group}"
-
-  depends_on = [
-    "azurerm_kubernetes_cluster.main",
-  ]
-}
-
 resource "azurerm_role_assignment" "aks-master" {
   scope              = "${data.azurerm_subscription.main.id}"
   role_definition_id = "${azurerm_role_definition.main.id}"

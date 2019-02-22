@@ -84,41 +84,6 @@ resource "azurerm_role_assignment" "aks-network" {
   principal_id         = "${azuread_service_principal.aks.id}"
 }
 
-resource "azuread_application" "acr" {
-  name = "${var.name}-${var.env}-acr"
-}
-
-resource "azuread_service_principal" "acr" {
-  application_id = "${azuread_application.acr.application_id}"
-}
-
-resource "random_string" "acr" {
-  length  = 24
-  special = false
-
-  keepers = {
-    service_principal = "${azuread_service_principal.acr.id}"
-  }
-}
-
-resource "azuread_service_principal_password" "acr" {
-  service_principal_id = "${azuread_service_principal.acr.id}"
-  value                = "${random_string.acr.result}"
-  end_date             = "${timeadd(timestamp(), "8760h")}"
-
-  # This stops be 'end_date' changing on each run and causing a new password to be set
-  # to get the date to change here you would have to manually taint this resource...
-  lifecycle {
-    ignore_changes = ["end_date"]
-  }
-}
-
-resource "azurerm_role_assignment" "acr" {
-  scope                = "${azurerm_container_registry.main.id}"
-  role_definition_name = "AcrPush"
-  principal_id         = "${azuread_service_principal.acr.id}"
-}
-
 resource "azurerm_role_assignment" "bastion" {
   scope                = "${azurerm_resource_group.main.id}"
   role_definition_name = "Azure Kubernetes Service Cluster Admin Role"

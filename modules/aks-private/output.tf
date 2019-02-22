@@ -2,10 +2,6 @@ output "kubeconfig" {
   value = "${azurerm_kubernetes_cluster.main.kube_admin_config_raw}"
 }
 
-output "docker-login" {
-  value = "docker login ${azurerm_container_registry.main.login_server} -u ${azuread_service_principal.acr.application_id} -p ${azuread_service_principal_password.acr.value}"
-}
-
 locals {
   ingress-patch = <<EOF
 apiVersion: v1

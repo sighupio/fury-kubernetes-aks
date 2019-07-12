@@ -23,7 +23,7 @@ resource "azurerm_network_security_group" "network" {
 }
 
 resource "azurerm_network_security_rule" "bastion-ssh" {
-  count                       = "${var.bastion_enable_ssh}"
+  count                       = "${var.bastion_enable_ssh * var.bastion_count > 0 ? 1 : 0}"
   name                        = "bastion-ssh"
   priority                    = 100
   direction                   = "Inbound"

@@ -1,20 +1,22 @@
 resource "azurerm_subnet" "bastion" {
+  count                     = "${var.bastion_count > 0 ? 1 : 0}"
   name                      = "${var.name}-${var.env}-bastion"
   resource_group_name       = "${data.azurerm_resource_group.main.name}"
   virtual_network_name      = "${azurerm_virtual_network.network.name}"
   address_prefix            = "${cidrsubnet(var.vnet_cidr, 1, 1)}"
   network_security_group_id = "${azurerm_network_security_group.bastion.id}"
-  route_table_id            = "${azurerm_route_table.bastion.id}"
+  route_table_id            = "${azurerm_route_table.bastion.0.id}"
 }
 
 resource "azurerm_network_security_group" "bastion" {
+  count               = "${var.bastion_count > 0 ? 1 : 0}"
   name                = "${var.name}-${var.env}-bastion"
   location            = "${data.azurerm_resource_group.main.location}"
   resource_group_name = "${data.azurerm_resource_group.main.name}"
 }
 
 resource "azurerm_network_security_rule" "bastion-subnet-inbound-ssh" {
-  count                       = "${var.bastion_enable_ssh}"
+  count                       = "${var.bastion_enable_ssh * var.bastion_count > 0 ? 1 : 0}"
   name                        = "bastion-subnet-inbound-ssh"
   priority                    = 100
   direction                   = "Inbound"
@@ -29,7 +31,7 @@ resource "azurerm_network_security_rule" "bastion-subnet-inbound-ssh" {
 }
 
 resource "azurerm_network_security_rule" "bastion-subnet-inbound-openvpn" {
-  count                       = "${var.bastion_enable_openvpn}"
+  count                       = "${var.bastion_enable_openvpn * var.bastion_count > 0 ? 1 : 0}"
   name                        = "bastion-subnet-inbound-openvpn"
   priority                    = 105
   direction                   = "Inbound"
@@ -44,11 +46,13 @@ resource "azurerm_network_security_rule" "bastion-subnet-inbound-openvpn" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "bastion" {
+  count                     = "${var.bastion_count > 0 ? 1 : 0}"
   subnet_id                 = "${azurerm_subnet.bastion.id}"
   network_security_group_id = "${azurerm_network_security_group.bastion.id}"
 }
 
 resource "azurerm_route_table" "bastion" {
+  count               = "${var.bastion_count > 0 ? 1 : 0}"
   name                = "${var.name}-${var.env}-bastion"
   location            = "${data.azurerm_resource_group.main.location}"
   resource_group_name = "${data.azurerm_resource_group.main.name}"
@@ -67,8 +71,9 @@ resource "azurerm_route_table" "bastion" {
 }
 
 resource "azurerm_subnet_route_table_association" "bastion" {
+  count          = "${var.bastion_count > 0 ? 1 : 0}"
   subnet_id      = "${azurerm_subnet.bastion.id}"
-  route_table_id = "${azurerm_route_table.bastion.id}"
+  route_table_id = "${azurerm_route_table.bastion.0.id}"
 }
 
 resource "azurerm_public_ip" "bastion" {

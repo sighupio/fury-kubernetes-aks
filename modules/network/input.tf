@@ -62,6 +62,11 @@ variable "ssh_public_key" {
   type        = "string"
 }
 
+variable "ssh_private_key" {
+  description = "local path to the authorized SSH private key to connect to the bastion"
+  type        = "string"
+}
+
 # ASSUMPTIONS
 # main_subnet_cidr = "${cidrsubnet(var.vnet_cidr, 1, 0)}"
 # bastion_subnet_cidr = "${cidrsubnet(var.vnet_cidr, 1, 1)}"

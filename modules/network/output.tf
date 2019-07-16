@@ -17,3 +17,18 @@ output "bastion_public_ip" {
   description = "list of bastions' IP addressess"
   value       = "${flatten(azurerm_public_ip.bastion.*.ip_address)}"
 }
+
+locals {
+  inventory = <<EOF
+[bastion]
+${join("\n", formatlist("%s ansible_host=%s", azurerm_virtual_machine.bastion.*.name, azurerm_public_ip.bastion.*.ip_address))}
+
+[bastion:vars]
+ansible_user=ubuntu
+${var.ssh_private_key != "" ? "ansible_ssh_private_key_file=${var.ssh_private_key}" : ""}
+EOF
+}
+
+output "inventory" {
+  value = "${local.inventory}"
+}

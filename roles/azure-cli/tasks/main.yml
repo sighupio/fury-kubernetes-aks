@@ -1,0 +1,30 @@
+---
+- name: Installing Azure CLI dependencies
+  apt:
+    name:
+      - apt-transport-https
+      - lsb-release
+      - software-properties-common
+      - dirmngr
+    update_cache: yes
+    state: present
+
+- name: Adding Azure CLI repository key
+  apt_key:
+    keyserver: packages.microsoft.com
+    id: BC528686B50D79E339D3721CEB3E94ADBE1229CF
+    keyring: /etc/apt/trusted.gpg.d/microsoft.gpg
+    state: present
+
+- name: Adding Azure CLI repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ {{ ansible_distribution_release }} main"
+    filename: azure-cli
+    update_cache: yes
+    state: present
+
+- name: Installing Azure CLI
+  apt:
+    name: azure-cli
+    update_cache: yes
+    state: present

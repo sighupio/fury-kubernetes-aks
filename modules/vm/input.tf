@@ -38,6 +38,12 @@ variable "enable_public_ip" {
   default     = false
 }
 
+variable "domain_name_label" {
+  description = "label for the Domain Name. A DNS record is created for the public IP in the Microsoft Azure DNS system"
+  type        = "string"
+  default     = false
+}
+
 variable "security_rules" {
   description = "list of maps representing security rules (name, priority, direction, access, protocol, source_port_range, destination_port_range, source_address_prefix) to be applied to the created VMs"
   type        = "list"

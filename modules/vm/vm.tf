@@ -13,6 +13,7 @@ resource "azurerm_network_interface" "vm" {
   location                  = "${data.azurerm_resource_group.main.location}"
   resource_group_name       = "${data.azurerm_resource_group.main.name}"
   network_security_group_id = "${data.azurerm_network_security_group.main.id}"
+  enable_ip_forwarding      = "${var.enable_ip_forwarding}"
 
   ip_configuration {
     name                          = "${var.name}-${var.env}-${var.vm_name}-${count.index+1}"

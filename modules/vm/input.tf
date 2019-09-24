@@ -32,6 +32,12 @@ variable "network_security_group_name" {
   type        = "string"
 }
 
+variable "enable_ip_forwarding" {
+  description = "enable IP forwarding on VM network interface"
+  type        = "string"
+  default     = false
+}
+
 variable "enable_public_ip" {
   description = "set to true (boolean) to provision and associate public IP addresses with the created VMs"
   type        = "string"

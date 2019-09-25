@@ -56,18 +56,24 @@ resource "azurerm_route_table" "bastion" {
   name                = "${var.name}-${var.env}-bastion"
   location            = "${data.azurerm_resource_group.main.location}"
   resource_group_name = "${data.azurerm_resource_group.main.name}"
+}
 
-  route {
-    name           = "local"
-    address_prefix = "${var.vnet_cidr}"
-    next_hop_type  = "VnetLocal"
-  }
+resource "azurerm_route" "bastion-local" {
+  count               = "${var.bastion_count > 0 ? 1 : 0}"
+  name = "${var.name}-${var.env}-bastion-local"
+  resource_group_name = "${data.azurerm_resource_group.main.name}"
+  route_table_name = "${azurerm_route_table.bastion.0.name}"
+  address_prefix = "${var.vnet_cidr}"
+  next_hop_type = "VnetLocal"
+}
 
-  route {
-    name           = "internet"
-    address_prefix = "0.0.0.0/0"
-    next_hop_type  = "Internet"
-  }
+resource "azurerm_route" "bastion-internet" {
+  count               = "${var.bastion_count > 0 ? 1 : 0}"
+  name = "${var.name}-${var.env}-bastion-internet"
+  resource_group_name = "${data.azurerm_resource_group.main.name}"
+  route_table_name = "${azurerm_route_table.bastion.0.name}"
+  address_prefix = "0.0.0.0/0"
+  next_hop_type = "Internet"
 }
 
 resource "azurerm_subnet_route_table_association" "bastion" {

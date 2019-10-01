@@ -5,7 +5,7 @@ metadata:
     storageclass.beta.kubernetes.io/is-default-class: "true"
   labels:
     kubernetes.io/cluster-service: "true"
-  name: default
+  name: standard
 allowVolumeExpansion: true
 parameters:
   cachingmode: ReadOnly
@@ -20,7 +20,7 @@ kind: StorageClass
 metadata:
   labels:
     kubernetes.io/cluster-service: "true"
-  name: managed-premium
+  name: premium
 allowVolumeExpansion: true
 parameters:
   cachingmode: ReadOnly

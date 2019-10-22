@@ -19,3 +19,7 @@ EOF
 output "inventory" {
   value = "${local.inventory}"
 }
+
+output "private_ips" {
+  value = "${azurerm_network_interface.vm.*.private_ip_address}"
+}

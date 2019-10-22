@@ -76,6 +76,16 @@ resource "azurerm_route" "bastion-internet" {
   next_hop_type       = "Internet"
 }
 
+resource "azurerm_route" "bastion-custom" {
+  count                  = "${var.bastion_count > 0 ? length(var.routes) : 0}"
+  name                   = "${var.name}-${var.env}-custom-${count.index + 1}"
+  resource_group_name    = "${data.azurerm_resource_group.main.name}"
+  route_table_name       = "${azurerm_route_table.bastion.0.name}"
+  address_prefix         = "${lookup(var.routes[count.index], "address_prefix")}"
+  next_hop_type          = "VirtualAppliance"
+  next_hop_in_ip_address = "${lookup(var.routes[count.index], "next_hop")}"
+}
+
 resource "azurerm_subnet_route_table_association" "bastion" {
   count          = "${var.bastion_count > 0 ? 1 : 0}"
   subnet_id      = "${azurerm_subnet.bastion.id}"

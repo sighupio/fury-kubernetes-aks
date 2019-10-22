@@ -49,28 +49,28 @@ resource "azurerm_route_table" "network" {
 }
 
 resource "azurerm_route" "network-local" {
-  name = "${var.name}-${var.env}-network-local"
+  name                = "${var.name}-${var.env}-network-local"
   resource_group_name = "${data.azurerm_resource_group.main.name}"
-  route_table_name = "${azurerm_route_table.network.name}"
-  address_prefix = "${var.vnet_cidr}"
-  next_hop_type = "VnetLocal"
+  route_table_name    = "${azurerm_route_table.network.name}"
+  address_prefix      = "${var.vnet_cidr}"
+  next_hop_type       = "VnetLocal"
 }
 
 resource "azurerm_route" "network-internet" {
-  name = "${var.name}-${var.env}-network-internet"
+  name                = "${var.name}-${var.env}-network-internet"
   resource_group_name = "${data.azurerm_resource_group.main.name}"
-  route_table_name = "${azurerm_route_table.network.name}"
-  address_prefix = "0.0.0.0/0"
-  next_hop_type = "Internet"
+  route_table_name    = "${azurerm_route_table.network.name}"
+  address_prefix      = "0.0.0.0/0"
+  next_hop_type       = "Internet"
 }
 
 resource "azurerm_route" "custom" {
-  count = "${length(var.routes)}"
-  name = "${var.name}-${var.env}-custom-${count.index + 1}"
-  resource_group_name = "${data.azurerm_resource_group.main.name}"
-  route_table_name = "${azurerm_route_table.network.name}"
-  address_prefix = "${lookup(var.routes[count.index], "address_prefix")}"
-  next_hop_type = "VirtualAppliance"
+  count                  = "${length(var.routes)}"
+  name                   = "${var.name}-${var.env}-custom-${count.index + 1}"
+  resource_group_name    = "${data.azurerm_resource_group.main.name}"
+  route_table_name       = "${azurerm_route_table.network.name}"
+  address_prefix         = "${lookup(var.routes[count.index], "address_prefix")}"
+  next_hop_type          = "VirtualAppliance"
   next_hop_in_ip_address = "${lookup(var.routes[count.index], "next_hop")}"
 }
 

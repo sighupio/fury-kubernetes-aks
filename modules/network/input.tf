@@ -24,8 +24,8 @@ variable "vnet_cidr" {
 
 variable "routes" {
   description = "custom routes list"
-  type = "list"
-  default = []
+  type        = "list"
+  default     = []
 }
 
 variable "main_subnet_endpoints" {
@@ -76,3 +76,4 @@ variable "ssh_private_key" {
 # ASSUMPTIONS
 # main_subnet_cidr = "${cidrsubnet(var.vnet_cidr, 1, 0)}"
 # bastion_subnet_cidr = "${cidrsubnet(var.vnet_cidr, 1, 1)}"
+
